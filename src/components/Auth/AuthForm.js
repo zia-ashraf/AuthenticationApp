@@ -12,39 +12,48 @@ const AuthForm = () => {
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
     setIsLoading(true);
+    let url;
     if (isLogin) {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDxBZtZz0WKDWl9OBHPJQmfQ34XXtSe9l8";
     } else {
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxBZtZz0WKDWl9OBHPJQmfQ34XXtSe9l8",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      ).then((res) => {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDxBZtZz0WKDWl9OBHPJQmfQ34XXtSe9l8";
+    }
+
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
         setIsLoading(false);
         if (res.ok) {
-          //do something
+          return res.json();
         } else {
           return res.json().then((data) => {
             //show an error
             let errormessage = "Authentication Failed!";
-            if (data && data.error && data.error.message) {
-              errormessage = data.error.message;
-            }
-            alert(errormessage);
-
-            console.log(loading);
+            // if (data && data.error && data.error.message) {
+            //   errormessage = data.error.message;
+            // }
+            // alert(errormessage);
+            throw new Error(errormessage);
           });
         }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        alert(error.message);
       });
-    }
   };
 
   const switchAuthModeHandler = () => {

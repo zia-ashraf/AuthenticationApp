@@ -1,9 +1,13 @@
-import { createContext, useState } from "react";
+import { useState } from "react";
+import React from "react";
 
-const AuthContext =
-  createContext();
-  // this is generally set here so that we define the general shape of our constext and get better auto-completion later
-  // { token: "", isLoggedIn: false, login: (token) => {}, logout: () => {} }
+const AuthContext = React.createContext({
+  token: "",
+  isLoggedIn: true,
+  login: (token) => {},
+  logout: () => {},
+});
+// this is generally set here so that we define the general shape of our constext and get better auto-completion later
 
 export const AuthContextProvider = (props) => {
   const [token, setToken] = useState(null);
@@ -23,9 +27,9 @@ export const AuthContextProvider = (props) => {
   };
   console.log(contextValue.isLoggedIn);
   return (
-    <AuthContextProvider value={contextValue}>
+    <AuthContext.Provider value={contextValue}>
       {props.children}
-    </AuthContextProvider>
+    </AuthContext.Provider>
   );
 };
 
